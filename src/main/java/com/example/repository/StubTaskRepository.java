@@ -35,7 +35,7 @@ public class StubTaskRepository implements TaskRepository {
 			stubTasks.put(task.getId(), task);
 			return task;
 		}
-		throw new IllegalArgumentException("Not found model.Task with id: " + task.getId());
+		throw new IllegalArgumentException("Not found Task with id: " + task.getId());
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class StubTaskRepository implements TaskRepository {
 
 	@Override
 	public void initialize() {
-		save(new Task(0, "model.Task 1", "model.Task description 1", false));
-		save(new Task(0, "model.Task 2", "model.Task description 2", true));
+		save(new Task(0, "Task 1", "Task description 1", false));
+		save(new Task(0, "Task 2", "Task description 2", true));
 	}
 }
