@@ -8,6 +8,9 @@ import com.example.service.TaskService;
 
 import java.util.List;
 
+/**
+ * Контроллер для работы с задачами
+ */
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
@@ -23,6 +26,9 @@ public class TaskController {
 		this.prototypeScopedBean = prototypeScopedBean;
 	}
 
+	/**
+	 * Получить все задачи
+	 */
 	@GetMapping
 	public List<Task> getAllTasks() {
 
@@ -37,22 +43,34 @@ public class TaskController {
 		return taskService.findAll();
 	}
 
+	/**
+	 * Получить задачу по ID
+	 */
 	@GetMapping("/{id}")
 	public Task getTaskById(@PathVariable Long id) {
 		return taskService.findById(id);
 	}
 
+	/**
+	 * Создать новую задачу
+	 */
 	@PostMapping
 	public Task createTask(@RequestBody Task task) {
 		return taskService.save(task);
 	}
 
+	/**
+	 * Обновить существующую задачу
+	 */
 	@PutMapping("/{id}")
 	public Task updateTask(@PathVariable Long id, @RequestBody Task task) {
 		task.setId(id);
 		return taskService.update(task);
 	}
 
+	/**
+	 * Удалить задачу по ID
+	 */
 	@DeleteMapping("/{id}")
 	public void deleteTask(@PathVariable Long id) {
 		taskService.deleteById(id);

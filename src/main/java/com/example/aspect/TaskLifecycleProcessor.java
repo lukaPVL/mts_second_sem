@@ -8,6 +8,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
+/**
+ * Процессор для логирования жизненного цикла бинов
+ */
 @Component
 public class TaskLifecycleProcessor implements BeanPostProcessor {
 
@@ -17,7 +20,7 @@ public class TaskLifecycleProcessor implements BeanPostProcessor {
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 		if (bean instanceof TaskService || bean instanceof TaskRepository) {
 			log.info("До инициализации бина: {} (класс: {})",
-				beanName, bean.getClass());
+				beanName, bean.getClass().getSimpleName());
 		}
 		return bean;
 	}
@@ -26,7 +29,7 @@ public class TaskLifecycleProcessor implements BeanPostProcessor {
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		if (bean instanceof TaskService || bean instanceof TaskRepository) {
 			log.info("После инициализации бина: {} (класс: {})",
-				beanName, bean.getClass());
+				beanName, bean.getClass().getSimpleName());
 		}
 		return bean;
 	}

@@ -2,6 +2,9 @@ package com.example.model;
 
 import java.util.Objects;
 
+/**
+ * Модель задачи
+ */
 public class Task {
 	private long id;
 	private String title;

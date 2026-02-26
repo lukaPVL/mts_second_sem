@@ -7,15 +7,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * Аспект для логирования вызовов методов в сервисах
+ */
 @Aspect
 @Component
 public class LoggingAspect {
 
 	private static final Logger log = LoggerFactory.getLogger(LoggingAspect.class);
 
+	/**
+	 * Логирует начало, конец и результат выполнения методов
+	 */
 	@Around("execution(* com.example.service.*.*(..))")
 	public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 		String methodName = joinPoint.getSignature().getName();
@@ -43,6 +46,3 @@ public class LoggingAspect {
 		}
 	}
 }
-
-
-

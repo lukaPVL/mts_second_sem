@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+/**
+ * Бин с областью видимости prototype (новый при каждом обращении)
+ */
 @Component
 @Scope("prototype")
 public class PrototypeScopedBean {
@@ -15,10 +18,16 @@ public class PrototypeScopedBean {
 		System.out.println("СОЗДАН НОВЫЙ PrototypeScopedBean: " + instanceId);
 	}
 
+	/**
+	 * Сгенерировать новый ID для задачи
+	 */
 	public String generateTaskId() {
 		return "TASK: " + UUID.randomUUID().toString().substring(0, 8);
 	}
 
+	/**
+	 * Получить ID экземпляра бина
+	 */
 	public String getInstanceId() {
 		return instanceId;
 	}
