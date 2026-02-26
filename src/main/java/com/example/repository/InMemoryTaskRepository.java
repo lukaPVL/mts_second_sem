@@ -1,3 +1,6 @@
+package repository;
+
+import model.Task;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -39,7 +42,7 @@ public class InMemoryTaskRepository implements TaskRepository {
 			tasks.put(task.getId(), task);
 			return task;
 		}
-		throw new IllegalArgumentException("Not found Task with id: " + task.getId());
+		throw new IllegalArgumentException("Not found model.Task with id: " + task.getId());
 	}
 
 	@Override

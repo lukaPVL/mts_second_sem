@@ -1,4 +1,8 @@
+package service;
+
+import model.Task;
 import org.springframework.stereotype.Service;
+import repository.TaskRepository;
 
 import java.util.List;
 import java.util.Optional;
