@@ -1,6 +1,6 @@
-package repository;
+package com.example.repository;
 
-import model.Task;
+import com.example.model.Task;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 

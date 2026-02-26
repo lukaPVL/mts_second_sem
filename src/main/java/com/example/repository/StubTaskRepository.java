@@ -1,6 +1,6 @@
-package repository;
+package com.example.repository;
 
-import model.Task;
+import com.example.model.Task;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;

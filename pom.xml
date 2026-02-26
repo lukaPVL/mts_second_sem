@@ -18,7 +18,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.3</version> <!-- Укажите актуальную версию -->
-        <relativePath/> <!-- lookup parent from repository, not from local FS -->
+        <relativePath/> <!-- lookup parent from com.example.repository, not from local FS -->
     </parent>
 
     <dependencies>

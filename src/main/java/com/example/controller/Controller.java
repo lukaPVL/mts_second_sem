@@ -1,8 +1,8 @@
-package controller;
+package com.example.controller;
 
-import model.Task;
+import com.example.model.Task;
 import org.springframework.web.bind.annotation.*;
-import service.TaskService;
+import com.example.service.TaskService;
 
 import java.util.List;
 
