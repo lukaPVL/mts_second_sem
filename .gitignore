@@ -3,6 +3,14 @@ git target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Compiled files
+target/
+*.class
+
+# Maven
+target/
+log/
+
 ### IntelliJ IDEA ###
 .idea/
 .idea/modules.xml
