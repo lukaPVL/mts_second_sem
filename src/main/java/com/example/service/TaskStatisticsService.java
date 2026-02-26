@@ -17,7 +17,7 @@ public class TaskStatisticsService {
 	@Value("${app.version}")
 	private String appVersion;
 
-	@Value("${app.port}")
+	@Value("${server.port}")
 	private String serverPort;
 
 	public TaskStatisticsService(TaskRepository taskRepositoryInMemory,
