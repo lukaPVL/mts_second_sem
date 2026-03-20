@@ -1,25 +1,18 @@
-package com.example.model;
+package com.example.dto;
 
 import com.example.enums.Priority;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-/**
- * Модель задачи
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Task {
+public class TaskResponseDto {
   private Long id;
   private String title;
   private String description;
@@ -27,14 +20,5 @@ public class Task {
   private LocalDateTime createdAt;
   private LocalDate dueDate;
   private Priority priority;
-
-  private Set<String> tags = new HashSet<>();
-
-  public void setCreatedAtNow() {
-    this.createdAt = LocalDateTime.now();
-  }
-
-  public void addTags(List<String> tagsStr) {
-    tags.addAll(tagsStr);
-  }
+  private Set<String> tags;
 }
