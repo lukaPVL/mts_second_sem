@@ -1,13 +1,12 @@
 package com.example.controller;
 
-import com.example.dto.TaskCreateDto;
-import com.example.dto.TaskResponseDto;
-import com.example.dto.TaskUpdateDto;
+import com.example.dto.*;
 import com.example.mapper.TaskMapper;
 import com.example.model.Task;
 import com.example.scope.PrototypeScopedBean;
 import com.example.scope.RequestScopedBean;
 import lombok.AllArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.example.service.TaskService;
 
@@ -57,7 +56,8 @@ public class TaskController {
 	 * Создать новую задачу
 	 */
 	@PostMapping
-	public TaskResponseDto createTask(@RequestBody TaskCreateDto createDto) {
+	public TaskResponseDto createTask(
+      @Validated(OnCreate.class) @RequestBody TaskCreateDto createDto) {
     Task task = taskMapper.toEntity(createDto);
     task.setCreatedAtNow();
     Task savedTask = taskService.save(task);
@@ -68,7 +68,9 @@ public class TaskController {
 	 * Обновить существующую задачу
 	 */
 	@PutMapping("/{id}")
-	public TaskResponseDto updateTask(@PathVariable Long id, @RequestBody TaskUpdateDto updateDto) {
+	public TaskResponseDto updateTask(
+    @PathVariable Long id,
+    @Validated(OnUpdate.class) @RequestBody TaskUpdateDto updateDto) {
 		Task existingTask = taskService.findById(id);
     taskMapper.updateEntity(updateDto, existingTask);
     Task updatedTask = taskService.update(existingTask);
