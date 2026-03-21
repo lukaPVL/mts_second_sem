@@ -6,11 +6,12 @@ import com.example.model.Task;
 import com.example.scope.PrototypeScopedBean;
 import com.example.scope.RequestScopedBean;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.example.service.TaskService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class TaskController {
 	 * Получить все задачи
 	 */
 	@GetMapping
-	public List<TaskResponseDto> getAllTasks() {
+	public ResponseEntity<List<TaskResponseDto>> getAllTasks() {
 
 		System.out.println("REQUEST SCOPED BEAN");
 		System.out.println("Request ID: " + requestScopedBean.getRequestId());
@@ -40,48 +41,56 @@ public class TaskController {
 		System.out.println("Generated Task ID: " + prototypeScopedBean.generateTaskId());
 
     List<Task> tasks = taskService.findAll();
-		return tasks.stream().map(taskMapper::toResponseDto).toList();
+    List<TaskResponseDto> responseDtoList = tasks.stream().map(taskMapper::toResponseDto).toList();
+		return ResponseEntity.ok(responseDtoList);
 	}
 
 	/**
 	 * Получить задачу по ID
 	 */
 	@GetMapping("/{id}")
-	public TaskResponseDto getTaskById(@PathVariable Long id) {
+	public ResponseEntity<TaskResponseDto> getTaskById(@PathVariable Long id) {
     Task task = taskService.findById(id);
-		return taskMapper.toResponseDto(task);
+    TaskResponseDto responseDto = taskMapper.toResponseDto(task);
+		return ResponseEntity.ok(responseDto);
 	}
 
 	/**
 	 * Создать новую задачу
 	 */
 	@PostMapping
-	public TaskResponseDto createTask(
+	public ResponseEntity<TaskResponseDto> createTask(
       @Validated(OnCreate.class) @RequestBody TaskCreateDto createDto) {
     Task task = taskMapper.toEntity(createDto);
     task.setCreatedAtNow();
     Task savedTask = taskService.save(task);
-		return taskMapper.toResponseDto(savedTask);
+
+    TaskResponseDto responseDto = taskMapper.toResponseDto(savedTask);
+		return ResponseEntity.status(HttpStatus.CREATED)
+            .body(responseDto);
 	}
 
 	/**
 	 * Обновить существующую задачу
 	 */
 	@PutMapping("/{id}")
-	public TaskResponseDto updateTask(
+	public ResponseEntity<TaskResponseDto> updateTask(
     @PathVariable Long id,
     @Validated(OnUpdate.class) @RequestBody TaskUpdateDto updateDto) {
 		Task existingTask = taskService.findById(id);
     taskMapper.updateEntity(updateDto, existingTask);
     Task updatedTask = taskService.update(existingTask);
-		return taskMapper.toResponseDto(updatedTask);
+
+    TaskResponseDto responseDto = taskMapper.toResponseDto(updatedTask);
+		return ResponseEntity.ok(responseDto);
 	}
 
 	/**
 	 * Удалить задачу по ID
 	 */
 	@DeleteMapping("/{id}")
-	public void deleteTask(@PathVariable Long id) {
+	public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
 		taskService.deleteById(id);
+    return ResponseEntity.noContent().build();
 	}
 }
