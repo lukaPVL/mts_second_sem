@@ -5,7 +5,12 @@ import com.example.mapper.TaskMapper;
 import com.example.model.Task;
 import com.example.scope.PrototypeScopedBean;
 import com.example.scope.RequestScopedBean;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +23,8 @@ import java.util.List;
 /**
  * Контроллер для работы с задачами
  */
-@AllArgsConstructor
+@Tag(name = "Tasks", description = "Управление задачами")
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
@@ -33,6 +39,11 @@ public class TaskController {
 	/**
 	 * Получить все задачи
 	 */
+  @Operation(summary = "Получить все задачи")
+  @ApiResponses(value = {
+    @ApiResponse(responseCode = "200", description = "Успешно"),
+    @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+  })
 	@GetMapping
 	public ResponseEntity<List<TaskResponseDto>> getAllTasks() {
 
@@ -55,6 +66,11 @@ public class TaskController {
 	/**
 	 * Получить задачу по ID
 	 */
+  @Operation(summary = "Получить задачу по ID")
+  @ApiResponses(value = {
+    @ApiResponse(responseCode = "200", description = "Успешно"),
+    @ApiResponse(responseCode = "404", description = "Задача не найдена")
+  })
 	@GetMapping("/{id}")
 	public ResponseEntity<TaskResponseDto> getTaskById(@PathVariable Long id) {
     Task task = taskService.findById(id);
@@ -67,6 +83,12 @@ public class TaskController {
 	/**
 	 * Создать новую задачу
 	 */
+  @Operation(summary = "Обновить задачу")
+  @ApiResponses(value = {
+    @ApiResponse(responseCode = "200", description = "Успешно"),
+    @ApiResponse(responseCode = "404", description = "Задача не найдена"),
+    @ApiResponse(responseCode = "400", description = "Невалидные данные")
+  })
 	@PostMapping
 	public ResponseEntity<TaskResponseDto> createTask(
       @Validated(OnCreate.class) @RequestBody TaskCreateDto createDto) {

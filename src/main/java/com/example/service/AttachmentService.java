@@ -1,5 +1,7 @@
 package com.example.service;
 
+import com.example.exception.TaskNotFoundException;
+import com.example.model.Task;
 import com.example.model.TaskAttachment;
 import com.example.repository.TaskAttachmentRepository;
 import com.example.repository.TaskRepository;
@@ -32,8 +34,13 @@ public class AttachmentService {
   private String uploadDir;
 
   public TaskAttachment storeAttachment(Long taskId, MultipartFile file) {
-    taskRepository.findById(taskId)
-        .orElseThrow(() -> new RuntimeException("Task with id: " + taskId + " not found :("));
+    Task task = taskRepository.findById(taskId)
+      .orElseThrow(() -> new TaskNotFoundException("Task with id: " + taskId + " not found"));
+
+    // Проверяем, что файл не пустой
+    if (file == null || file.isEmpty()) {
+      throw new IllegalArgumentException("File is empty");
+    }
 
     try {
       Path uploadPath = Paths.get(uploadDir);
@@ -42,7 +49,7 @@ public class AttachmentService {
       }
 
       String originalFileName = file.getOriginalFilename();
-      String storedFileName = UUID.randomUUID() + getFileExtension(originalFileName);
+      String storedFileName = UUID.randomUUID().toString() + getFileExtension(originalFileName);
 
       Path filePath = uploadPath.resolve(storedFileName);
       Files.copy(file.getInputStream(), filePath);
@@ -60,7 +67,7 @@ public class AttachmentService {
 
     } catch (IOException e) {
       log.error("Failed to store file for task {}", taskId, e);
-      throw new RuntimeException("Failed to store file", e);
+      throw new RuntimeException("Failed to store file: " + e.getMessage(), e);
     }
   }
 

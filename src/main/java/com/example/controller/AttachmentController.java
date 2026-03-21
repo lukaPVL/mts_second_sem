@@ -1,12 +1,14 @@
 package com.example.controller;
 
-import com.example.model.AttachmentResponseDto;
+import com.example.dto.AttachmentResponseDto;
+import com.example.exception.TaskNotFoundException;
 import com.example.model.TaskAttachment;
 import com.example.service.AttachmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,23 +26,37 @@ public class AttachmentController {
   @Value("${app.api.version:2.0.0}")
   private String apiVersion;
 
-  @PostMapping("tasks/{taskId}/attachments")
-  public ResponseEntity<AttachmentResponseDto> uploadAttachment(
-      @PathVariable Long taskId,
-      @RequestParam("file") MultipartFile file) {
+  @PostMapping("/tasks/{taskId}/attachments")
+  public ResponseEntity<?> uploadAttachment(
+    @PathVariable Long taskId,
+    @RequestParam("file") MultipartFile file) {
 
-    TaskAttachment attachment = attachmentService.storeAttachment(taskId, file);
+    try {
+      TaskAttachment attachment = attachmentService.storeAttachment(taskId, file);
 
-    AttachmentResponseDto responseDto = AttachmentResponseDto.builder()
-      .id(taskId)
-      .fileName(attachment.getFileName())
-      .size(attachment.getSize())
-      .uploadedAt(attachment.getUploadedAt())
-      .build();
+      AttachmentResponseDto responseDto = AttachmentResponseDto.builder()
+        .id(attachment.getId())
+        .fileName(attachment.getFileName())
+        .size(attachment.getSize())
+        .uploadedAt(attachment.getUploadedAt())
+        .build();
 
-    return ResponseEntity.ok()
-      .header("X-API-Version", apiVersion)
-      .body(responseDto);
+      return ResponseEntity.ok()
+        .header("X-API-Version", apiVersion)
+        .body(responseDto);
+    } catch (TaskNotFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .header("X-API-Version", apiVersion)
+        .build();
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .header("X-API-Version", apiVersion)
+        .build();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .header("X-API-Version", apiVersion)
+        .build();
+    }
   }
 
   @GetMapping("/attachments/{attachmentId}")
@@ -64,7 +80,7 @@ public class AttachmentController {
       .build();
   }
 
-  @GetMapping("/task/{taskId}/attachments")
+  @GetMapping("/tasks/{taskId}/attachments")
   public ResponseEntity<List<AttachmentResponseDto>> getAttachments(@PathVariable Long taskId) {
     List<TaskAttachment> attachments = attachmentService.getAttachmentsByTaskId(taskId);
 

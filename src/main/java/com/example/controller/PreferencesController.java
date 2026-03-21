@@ -31,7 +31,9 @@ public class PreferencesController {
     HttpServletResponse response) {
 
     if (!mode.equals("compact") && !mode.equals("detailed")) {
-      return ResponseEntity.badRequest().build();
+      return ResponseEntity.badRequest()
+        .header("X-API-Version", apiVersion)  // ← добавить
+        .build();
     }
 
     Cookie cookie = new Cookie(VIEW_PREFERENCE_COOKIE, mode);

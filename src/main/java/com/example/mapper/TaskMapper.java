@@ -5,6 +5,7 @@ import com.example.dto.TaskResponseDto;
 import com.example.dto.TaskUpdateDto;
 import com.example.model.Task;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
@@ -14,9 +15,12 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 )
 public interface TaskMapper {
 
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "createdAt", ignore = true)
+  @Mapping(target = "completed", constant = "false")
   Task toEntity(TaskCreateDto dto);
 
-  TaskResponseDto toResponseDto(Task dto);
+  TaskResponseDto toResponseDto(Task task);
 
-  Task updateEntity(TaskUpdateDto dto, @MappingTarget Task task);
+  void updateEntity(TaskUpdateDto dto, @MappingTarget Task task);
 }

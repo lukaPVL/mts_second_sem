@@ -151,4 +151,21 @@ public class GlobalExceptionHandler {
 
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
   }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<ErrorResponse> handleIllegalArgument(
+    IllegalArgumentException ex,
+    HttpServletRequest request) {
+
+    ErrorResponse errorResponse = ErrorResponse.builder()
+      .timestamp(Instant.now())
+      .status(HttpStatus.BAD_REQUEST.value())
+      .error("Bad Request")
+      .message(ex.getMessage())
+      .path(request.getRequestURI())
+      .details(new HashMap<>())
+      .build();
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+  }
 }
