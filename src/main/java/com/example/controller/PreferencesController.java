@@ -2,6 +2,7 @@ package com.example.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,11 +13,16 @@ public class PreferencesController {
   private static final String VIEW_PREFERENCE_COOKIE = "viewPreference";
   private static final String DEFAULT_MODE = "detailed";
 
+  @Value("${app.api.version:2.0.0}")
+  private String apiVersion;
+
   @GetMapping("/view")
   public ResponseEntity<String> getViewPreference(
     @CookieValue(value = VIEW_PREFERENCE_COOKIE, defaultValue = DEFAULT_MODE) String viewPreference) {
 
-    return ResponseEntity.ok(viewPreference);
+    return ResponseEntity.ok()
+      .header("X-API-Version", apiVersion)
+      .body(viewPreference);
   }
 
   @PostMapping("/view")
@@ -35,7 +41,9 @@ public class PreferencesController {
 
     response.addCookie(cookie);
 
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok()
+      .header("X-API-Version", apiVersion)
+      .build();
   }
 
 }

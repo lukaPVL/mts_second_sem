@@ -6,6 +6,7 @@ import com.example.model.Task;
 import com.example.scope.PrototypeScopedBean;
 import com.example.scope.RequestScopedBean;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +27,9 @@ public class TaskController {
 	private final RequestScopedBean requestScopedBean;
 	private final PrototypeScopedBean prototypeScopedBean;
 
+  @Value("${app.api.version:2.0.0}")
+  private String apiVersion;
+
 	/**
 	 * Получить все задачи
 	 */
@@ -42,7 +46,10 @@ public class TaskController {
 
     List<Task> tasks = taskService.findAll();
     List<TaskResponseDto> responseDtoList = tasks.stream().map(taskMapper::toResponseDto).toList();
-		return ResponseEntity.ok(responseDtoList);
+    return ResponseEntity.ok()
+      .header("X-Total-Count", String.valueOf(responseDtoList.size()))
+      .header("X-API-Version", apiVersion)
+      .body(responseDtoList);
 	}
 
 	/**
@@ -52,7 +59,9 @@ public class TaskController {
 	public ResponseEntity<TaskResponseDto> getTaskById(@PathVariable Long id) {
     Task task = taskService.findById(id);
     TaskResponseDto responseDto = taskMapper.toResponseDto(task);
-		return ResponseEntity.ok(responseDto);
+    return ResponseEntity.ok()
+      .header("X-API-Version", apiVersion)
+      .body(responseDto);
 	}
 
 	/**
@@ -66,8 +75,9 @@ public class TaskController {
     Task savedTask = taskService.save(task);
 
     TaskResponseDto responseDto = taskMapper.toResponseDto(savedTask);
-		return ResponseEntity.status(HttpStatus.CREATED)
-            .body(responseDto);
+    return ResponseEntity.status(HttpStatus.CREATED)
+      .header("X-API-Version", apiVersion)
+      .body(responseDto);
 	}
 
 	/**
@@ -82,7 +92,9 @@ public class TaskController {
     Task updatedTask = taskService.update(existingTask);
 
     TaskResponseDto responseDto = taskMapper.toResponseDto(updatedTask);
-		return ResponseEntity.ok(responseDto);
+    return ResponseEntity.ok()
+      .header("X-API-Version", apiVersion)
+      .body(responseDto);
 	}
 
 	/**
@@ -91,6 +103,8 @@ public class TaskController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
 		taskService.deleteById(id);
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.noContent()
+      .header("X-API-Version", apiVersion)
+      .build();
 	}
 }

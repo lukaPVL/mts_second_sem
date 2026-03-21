@@ -4,6 +4,7 @@ import com.example.model.AttachmentResponseDto;
 import com.example.model.TaskAttachment;
 import com.example.service.AttachmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,7 +19,10 @@ import java.util.List;
 @RequestMapping("/api")
 public class AttachmentController {
 
-  private AttachmentService attachmentService;
+  private final AttachmentService attachmentService;
+
+  @Value("${app.api.version:2.0.0}")
+  private String apiVersion;
 
   @PostMapping("tasks/{taskId}/attachments")
   public ResponseEntity<AttachmentResponseDto> uploadAttachment(
@@ -34,7 +38,9 @@ public class AttachmentController {
       .uploadedAt(attachment.getUploadedAt())
       .build();
 
-    return ResponseEntity.ok(responseDto);
+    return ResponseEntity.ok()
+      .header("X-API-Version", apiVersion)
+      .body(responseDto);
   }
 
   @GetMapping("/attachments/{attachmentId}")
@@ -45,14 +51,17 @@ public class AttachmentController {
     return ResponseEntity.ok()
       .contentType(MediaType.parseMediaType(attachment.getContentType()))
       .header(HttpHeaders.CONTENT_DISPOSITION,
-              "attachment; filename=\"" + attachment.getFileName() + "\"")
+        "attachment; filename=\"" + attachment.getFileName() + "\"")
+      .header("X-API-Version", apiVersion)
       .body(resource);
   }
 
   @DeleteMapping("/attachments/{attachmentId}")
   public ResponseEntity<Void> deleteAttachment(@PathVariable Long attachmentId) {
     attachmentService.deleteAttachment(attachmentId);
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.noContent()
+      .header("X-API-Version", apiVersion)
+      .build();
   }
 
   @GetMapping("/task/{taskId}/attachments")
@@ -68,6 +77,8 @@ public class AttachmentController {
           .build())
       .toList();
 
-    return ResponseEntity.ok(responseDtoList);
+    return ResponseEntity.ok()
+      .header("X-API-Version", apiVersion)
+      .body(responseDtoList);
   }
 }
