@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "task_attachments")
 @Getter
 @Setter
 @Builder

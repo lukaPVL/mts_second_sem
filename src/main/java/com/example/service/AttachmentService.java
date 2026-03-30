@@ -38,7 +38,6 @@ public class AttachmentService {
     Task task = taskRepository.findById(taskId)
       .orElseThrow(() -> new TaskNotFoundException("Task with id: " + taskId + " not found"));
 
-    // Проверяем, что файл не пустой
     if (file == null || file.isEmpty()) {
       throw new IllegalArgumentException("File is empty");
     }

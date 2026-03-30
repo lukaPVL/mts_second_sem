@@ -6,14 +6,14 @@ CREATE TABLE tasks (
     created_at TIMESTAMP NOT NULL,
     last_update_at TIMESTAMP,
     due_date DATE,
-    priority VARCHAR(50),
+    priority VARCHAR(50)
 );
 
-CREATE TABLE tasks (
+CREATE TABLE tags (
     task_id BIGINT NOT NULL,
     tag VARCHAR(255),
     CONSTRAINT fk_task_tags FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE task_attachments (
     id BIGSERIAL PRIMARY KEY,
@@ -23,10 +23,5 @@ CREATE TABLE task_attachments (
     content_type VARCHAR(100),
     size BIGINT,
     uploaded_at TIMESTAMP NOT NULL,
-
-    CONSTRAINT fk_task FOREIGN KEY (task_id)
-        REFERENCES tasks (id)
-        ON DELETE CASCADE
+    CONSTRAINT fk_task_attachments FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
 );
-
-CREATE INDEX idx_task_attachment_task_id ON task_attachments(task_id);
