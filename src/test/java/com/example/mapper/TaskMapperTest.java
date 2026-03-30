@@ -4,7 +4,7 @@ import com.example.dto.TaskCreateDto;
 import com.example.dto.TaskResponseDto;
 import com.example.dto.TaskUpdateDto;
 import com.example.enums.Priority;
-import com.example.model.Task;
+import com.example.entity.Task;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,15 +1,15 @@
 package com.example.service;
 
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.example.repository.TaskRepository;
 
 @Service
+@RequiredArgsConstructor
 public class TaskStatisticsService {
 
-	private final TaskRepository taskRepositoryInMemory;
-	private final TaskRepository taskRepositoryStub;
+	private final TaskRepository taskRepository;
 
 	@Value("${app.name}")
 	private String appName;
@@ -20,19 +20,7 @@ public class TaskStatisticsService {
 	@Value("${server.port}")
 	private String serverPort;
 
-	public TaskStatisticsService(TaskRepository taskRepositoryInMemory,
-															 @Qualifier("repositoryStub") TaskRepository taskRepositoryStub) {
-		this.taskRepositoryInMemory = taskRepositoryInMemory;
-		this.taskRepositoryStub = taskRepositoryStub;
-	}
-
-	public String compareBeanInfo() {
-		return "Primary bean: " + taskRepositoryInMemory + "\n"
-			+ "Qualifier bean: " + taskRepositoryStub;
-	}
-
 	public String getAppInfo() {
 		return "App: " + appName + " " + appVersion +  " running on port: " + serverPort;
 	}
-
 }

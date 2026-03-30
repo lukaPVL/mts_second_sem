@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.model.Task;
+import com.example.entity.Task;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

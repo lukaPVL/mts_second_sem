@@ -2,7 +2,7 @@ package com.example.controller;
 
 import com.example.dto.TaskResponseDto;
 import com.example.mapper.TaskMapper;
-import com.example.model.Task;
+import com.example.entity.Task;
 import com.example.service.FavoritesService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;

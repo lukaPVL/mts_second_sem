@@ -2,7 +2,7 @@ package com.example.controller;
 
 import com.example.dto.AttachmentResponseDto;
 import com.example.exception.TaskNotFoundException;
-import com.example.model.TaskAttachment;
+import com.example.entity.TaskAttachment;
 import com.example.service.AttachmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

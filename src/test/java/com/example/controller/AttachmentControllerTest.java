@@ -57,7 +57,6 @@ class AttachmentControllerTest {
   @Test
   void uploadAttachment_ShouldReturn200_WhenValidFile() throws Exception {
     Long taskId = createTestTask();
-
     MockMultipartFile file = new MockMultipartFile(
       "file",
       "test.txt",

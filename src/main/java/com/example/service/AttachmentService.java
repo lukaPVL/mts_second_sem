@@ -1,8 +1,8 @@
 package com.example.service;
 
 import com.example.exception.TaskNotFoundException;
-import com.example.model.Task;
-import com.example.model.TaskAttachment;
+import com.example.entity.Task;
+import com.example.entity.TaskAttachment;
 import com.example.repository.TaskAttachmentRepository;
 import com.example.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,11 +33,11 @@ public class AttachmentService {
   @Value("${app.upload.dir:uploads}")
   private String uploadDir;
 
+  @Transactional
   public TaskAttachment storeAttachment(Long taskId, MultipartFile file) {
     Task task = taskRepository.findById(taskId)
       .orElseThrow(() -> new TaskNotFoundException("Task with id: " + taskId + " not found"));
 
-    // Проверяем, что файл не пустой
     if (file == null || file.isEmpty()) {
       throw new IllegalArgumentException("File is empty");
     }
@@ -55,7 +55,7 @@ public class AttachmentService {
       Files.copy(file.getInputStream(), filePath);
 
       TaskAttachment attachment = TaskAttachment.builder()
-        .taskId(taskId)
+        .task(task)
         .fileName(originalFileName)
         .storedFileName(storedFileName)
         .contentType(file.getContentType())
@@ -71,6 +71,7 @@ public class AttachmentService {
     }
   }
 
+  @Transactional
   public TaskAttachment getAttachment(Long attachmentId) {
     return attachmentRepository.findById(attachmentId)
         .orElseThrow(() -> new RuntimeException("Attachment not found :( (attachmentId: " + attachmentId + ")"));
@@ -93,6 +94,7 @@ public class AttachmentService {
     }
   }
 
+  @Transactional
   public void deleteAttachment(Long attachmentId) {
     TaskAttachment attachment = getAttachment(attachmentId);
     try {
@@ -110,7 +112,7 @@ public class AttachmentService {
     taskRepository.findById(taskId)
         .orElseThrow(() -> new RuntimeException("Task with id: " + taskId + " not found :("));
 
-    return attachmentRepository.findByTaskId(taskId);
+    return attachmentRepository.findByTask_Id(taskId);
   }
 
 
