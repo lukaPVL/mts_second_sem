@@ -4,7 +4,7 @@ import com.example.dto.TaskCreateDto;
 import com.example.enums.Priority;
 import com.example.exception.TaskNotFoundException;
 import com.example.mapper.TaskMapper;
-import com.example.model.Task;
+import com.example.entity.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

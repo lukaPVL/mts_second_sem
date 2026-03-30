@@ -3,7 +3,7 @@ package com.example.mapper;
 import com.example.dto.TaskCreateDto;
 import com.example.dto.TaskResponseDto;
 import com.example.dto.TaskUpdateDto;
-import com.example.model.Task;
+import com.example.entity.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

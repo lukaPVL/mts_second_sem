@@ -3,8 +3,8 @@ package com.example.service;
 import com.example.dto.TaskCreateDto;
 import com.example.enums.Priority;
 import com.example.mapper.TaskMapper;
-import com.example.model.Task;
-import com.example.model.TaskAttachment;
+import com.example.entity.Task;
+import com.example.entity.TaskAttachment;
 import com.example.repository.TaskAttachmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;

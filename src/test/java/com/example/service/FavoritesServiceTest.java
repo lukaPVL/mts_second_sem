@@ -3,7 +3,7 @@ package com.example.service;
 import com.example.dto.TaskCreateDto;
 import com.example.enums.Priority;
 import com.example.mapper.TaskMapper;
-import com.example.model.Task;
+import com.example.entity.Task;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

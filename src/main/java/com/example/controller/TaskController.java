@@ -2,14 +2,13 @@ package com.example.controller;
 
 import com.example.dto.*;
 import com.example.mapper.TaskMapper;
-import com.example.model.Task;
+import com.example.entity.Task;
 import com.example.scope.PrototypeScopedBean;
 import com.example.scope.RequestScopedBean;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.example.validation;
 
-import com.example.model.Task;
+import com.example.entity.Task;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

@@ -1,4 +1,4 @@
-package com.example.model;
+package com.example.entity;
 
 import com.example.enums.Priority;
 import jakarta.persistence.*;

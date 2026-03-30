@@ -1,21 +1,25 @@
 package com.example.repository;
 
-import com.example.model.Task;
+import com.example.enums.Priority;
+import com.example.entity.Task;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
-public interface TaskRepository {
 
-	List<Task> findAll();
 
-	Optional<Task> findById(Long id);
+@Repository
+public interface TaskRepository extends JpaRepository<Task, Long> {
 
-	Task save(Task task);
+  List<Task> findByCompletedAndPriority(boolean completed, Priority priority);
 
-	Task update(Task task);
+  @Query("SELECT t FROM Task t WHERE t.dueDate BETWEEN CURRENT_DATE AND :sevenDaysLater")
+  List<Task> findUpcomingTask(LocalDate sevenDaysLater);
 
-	void deleteById(Long id);
-
-	void initialize();
+  @EntityGraph(attributePaths = {"attachments", "tags"})
+  List<Task> findAll();
 }
