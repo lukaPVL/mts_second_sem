@@ -4,10 +4,16 @@ CREATE TABLE tasks (
     description TEXT,
     completed BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP NOT NULL,
+    last_update_at TIMESTAMP,
     due_date DATE,
     priority VARCHAR(50),
-    tags TEXT
 );
+
+CREATE TABLE tasks (
+    task_id BIGINT NOT NULL,
+    tag VARCHAR(255),
+    CONSTRAINT fk_task_tags FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
+)
 
 CREATE TABLE task_attachments (
     id BIGSERIAL PRIMARY KEY,
