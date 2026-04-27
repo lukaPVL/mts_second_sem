@@ -25,7 +25,7 @@ import java.util.List;
 @Tag(name = "Tasks", description = "Управление задачами")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/internal/tasks")
 public class TaskController {
 	private final TaskService taskService;
   private final TaskMapper taskMapper;

@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("external/v1/tasks")
 @RequiredArgsConstructor
@@ -52,5 +54,22 @@ public class ExternalApiController {
     public ResponseEntity<TaskResponseDto> getTaskById(@PathVariable Long taskId) {
         Task task = taskService.findById(taskId);
         return ResponseEntity.ok().body(taskMapper.toResponseDto(task));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TaskResponseDto>> getAllTasks(
+            @RequestParam(required = false) Boolean completed,
+            @RequestParam(required = false, defaultValue = "10") Integer limit) {
+
+        List<TaskResponseDto> allTasks = taskService.findAll().stream()
+                .map(taskMapper::toResponseDto)
+                .toList();
+
+        List<TaskResponseDto> filteredTasks = allTasks.stream()
+                .filter(task -> completed == null || task.isCompleted() == completed)
+                .limit(limit)
+                .toList();
+
+        return ResponseEntity.ok(filteredTasks);
     }
 }

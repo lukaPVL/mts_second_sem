@@ -7,6 +7,7 @@ import com.example.exception.TaskNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -15,7 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import java.net.URI;
-import java.rmi.server.ExportException;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -66,6 +68,17 @@ public class ExternalTasksClient {
                 .uri(uriBuilder -> uriBuilder.path("/external/v1/tasks/{id}").build(id))
                 .retrieve()
                 .toBodilessEntity();
+    }
+
+    public List<TaskResponseDto> getAllTasks(Boolean completed, Integer limit) {
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/external/v1/tasks")
+                        .queryParamIfPresent("completed", Optional.ofNullable(completed))
+                        .queryParamIfPresent("limit", Optional.ofNullable(limit))
+                        .build())
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<TaskResponseDto>>() {});
     }
 
 }
