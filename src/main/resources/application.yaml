@@ -51,6 +51,32 @@ spring:
     enabled: true
     locations: classpath:db/migration
 
+resilience4j:
+  ratelimiter:
+    instances:
+      externalApi:
+        limitForPeriod: 10              # Максимум 10 запросов
+        limitRefreshPeriod: 1s          # за 1 секунду
+        timeoutDuration: 500ms          # Сколько ждать очереди, если лимит исчерпан
+
+  circuitbreaker:
+    instances:
+      externalApi:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        recordExceptions:
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - com.example.exception.ExternalApiException
+
+  timelimiter:
+    instances:
+      externalApi:
+        timeoutDuration: 2s
+
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [traceId=%X{traceId}] - %msg%n"

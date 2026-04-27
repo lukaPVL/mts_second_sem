@@ -24,6 +24,14 @@ public class AcessLogFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
+        String authHeader = httpServletRequest.getHeader("Authorization");
+        String maskedToken = "NONE";
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            maskedToken = maskToken(token);
+        }
+
         try {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } finally {
@@ -35,7 +43,8 @@ public class AcessLogFilter implements Filter {
                     httpServletRequest.getRequestURI(),
                     httpServletResponse.getStatus(),
                     duration,
-                    traceId);
+                    traceId,
+                    maskedToken);
         }
     }
 
