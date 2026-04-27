@@ -1,0 +1,152 @@
+# ==========================================
+# ОБЩИЕ НАСТРОЙКИ (Видны всем профилям)
+# ==========================================
+external:
+  api:
+    url: "http://localhost:8081"
+server:
+  port: 8081
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+  jpa:
+    auditing:
+      enabled: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
+app:
+  jwt:
+    secret: "v-ochen-dlinniy-i-sekretniy-kluch-minimum-32-simvola"
+    expiration: 3600000
+  security:
+    pepper: "super-secret-static-pepper-string-123"
+  name: Task Manager Application
+  version: 1.0.0
+  api:
+    version: 2.0.0
+  upload:
+    dir: uploads
+
+resilience4j:
+  ratelimiter:
+    instances:
+      externalApi:
+        limitForPeriod: 10
+        limitRefreshPeriod: 1s
+        timeoutDuration: 500ms
+  circuitbreaker:
+    instances:
+      externalApi:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        recordExceptions:
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - com.example.exception.ExternalApiException
+  timelimiter:
+    instances:
+      externalApi:
+        timeoutDuration: 2s
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [traceId=%X{traceId}] - %msg%n"
+  level:
+    com.example: DEBUG
+    org.springframework: INFO
+
+---
+# ==========================================
+# ПРОФИЛЬ: DEV
+# ==========================================
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/todo_bd}
+    username: ${DB_USERNAME:user}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: 8082
+app:
+  name: Task Manager DEV
+
+---
+# ==========================================
+# ПРОФИЛЬ: TEST
+# ==========================================
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: false
+
+---
+# ==========================================
+# ПРОФИЛЬ: PROD
+# ==========================================
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    com.example: WARN
+    org.springframework: WARN
+server:
+  port: 80
+app:
+  name: Task Manager PROD
