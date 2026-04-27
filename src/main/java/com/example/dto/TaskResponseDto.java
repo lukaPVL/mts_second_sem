@@ -3,6 +3,7 @@ package com.example.dto;
 import com.example.enums.Priority;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class TaskResponseDto {
 
   @Schema(description = "Идентификатор задачи",

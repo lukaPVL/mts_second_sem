@@ -8,14 +8,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
-import org.springframework.http.ProblemDetail;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +53,7 @@ public class ExternalTasksClient {
                     throw new ExternalApiException("Client error during task creating");
                 })
                 .onStatus(HttpStatusCode::is5xxServerError, (request, response) ->  {
+                    handleHtmlResponse(request, response);
                     throw new ExternalApiException("External service is down");
                 })
                 .toEntity(TaskResponseDto.class);
@@ -79,6 +81,19 @@ public class ExternalTasksClient {
                         .build())
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<TaskResponseDto>>() {});
+    }
+
+    private void handleHtmlResponse(HttpRequest request, ClientHttpResponse response) throws IOException {
+        String contentType = response.getHeaders().getContentType().toString();
+        if (contentType.contains(MediaType.TEXT_HTML_VALUE)) {
+            byte[] bodyBytes = response.getBody().readNBytes(100);
+            String bodyPreview = new String(bodyBytes, StandardCharsets.UTF_8);
+
+            log.error("Ожидался JSON, но получен HTML. Путь: {}. Начало ответа: {}...",
+                    request.getURI(), bodyPreview);
+
+            throw new ExternalApiException("Внешний сервис вернул HTML вместо JSON (возможно, ошибка прокси)");
+        }
     }
 
 }

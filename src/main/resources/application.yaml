@@ -1,3 +1,9 @@
+# ==========================================
+# ОБЩИЕ НАСТРОЙКИ (Видны всем профилям)
+# ==========================================
+external:
+  api:
+    url: "http://localhost:8081"
 server:
   port: 8081
 
@@ -23,6 +29,11 @@ springdoc:
     operations-sorter: method
 
 app:
+  jwt:
+    secret: "v-ochen-dlinniy-i-sekretniy-kluch-minimum-32-simvola"
+    expiration: 3600000
+  security:
+    pepper: "super-secret-static-pepper-string-123"
   name: Task Manager Application
   version: 1.0.0
   api:
@@ -30,7 +41,41 @@ app:
   upload:
     dir: uploads
 
+resilience4j:
+  ratelimiter:
+    instances:
+      externalApi:
+        limitForPeriod: 10
+        limitRefreshPeriod: 1s
+        timeoutDuration: 500ms
+  circuitbreaker:
+    instances:
+      externalApi:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        recordExceptions:
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - com.example.exception.ExternalApiException
+  timelimiter:
+    instances:
+      externalApi:
+        timeoutDuration: 2s
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [traceId=%X{traceId}] - %msg%n"
+  level:
+    com.example: DEBUG
+    org.springframework: INFO
+
 ---
+# ==========================================
+# ПРОФИЛЬ: DEV
+# ==========================================
 spring:
   config:
     activate:
@@ -51,44 +96,15 @@ spring:
     enabled: true
     locations: classpath:db/migration
 
-resilience4j:
-  ratelimiter:
-    instances:
-      externalApi:
-        limitForPeriod: 10              # Максимум 10 запросов
-        limitRefreshPeriod: 1s          # за 1 секунду
-        timeoutDuration: 500ms          # Сколько ждать очереди, если лимит исчерпан
-
-  circuitbreaker:
-    instances:
-      externalApi:
-        slidingWindowSize: 10
-        failureRateThreshold: 50
-        waitDurationInOpenState: 30s
-        permittedNumberOfCallsInHalfOpenState: 3
-        slidingWindowType: COUNT_BASED
-        recordExceptions:
-          - java.util.concurrent.TimeoutException
-          - org.springframework.web.client.ResourceAccessException
-          - com.example.exception.ExternalApiException
-
-  timelimiter:
-    instances:
-      externalApi:
-        timeoutDuration: 2s
-
-logging:
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [traceId=%X{traceId}] - %msg%n"
-  level:
-    com.example: DEBUG
-    org.springframework: INFO
 server:
   port: 8082
 app:
   name: Task Manager DEV
 
 ---
+# ==========================================
+# ПРОФИЛЬ: TEST
+# ==========================================
 spring:
   config:
     activate:
@@ -109,6 +125,9 @@ spring:
     enabled: false
 
 ---
+# ==========================================
+# ПРОФИЛЬ: PROD
+# ==========================================
 spring:
   config:
     activate:
